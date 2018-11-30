@@ -1,22 +1,25 @@
 const path=require('path');
+const http=require('http');
 const express = require ('express');
+const socketIO=require('socket.io');
 
 const publicPath=path.join(__dirname, '/../public');
 const port=process.env.PORT || 3000;
 var app=express();
+var server=http.createServer(app);
+var io = socketIO(server);
 
-// app.set('view engine','hbs');
 
 app.use(express.static(publicPath));
 
-// app.get('/',(req,res)=>{
-//   //res.send('Hello World');
-//   res.render('home.hbs',{
-//     pageTitle:'Home Page'
-//   });
-// });
+io.on('connection',(socket)=>{
+  console.log('New user connected');
+  socket.on('disconnect',()=>{
+    console.log('User was disconnected');
+  });
+})
 
 
-app.listen(port,()=>{
+server.listen(port,()=>{
   console.log(`Server up on port ${port}`);
 });
